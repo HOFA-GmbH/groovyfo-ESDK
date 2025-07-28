@@ -18,7 +18,7 @@ import groovyx.net.http.HttpBuilder;
  * 
  * Basisklasse von der jedes Script abgeleitet wird
  * 
- * @author Michael Rothenbcher, Finetech GmbH & Co. KG
+ * @author Michael RothenbÃ¼cher, Finetech GmbH & Co. KG
  * 
  */
 @CompileStatic
@@ -137,7 +137,7 @@ public abstract class AbasBaseScript extends GroovyFOScript {
 	public abstract Object runCode();
 
 	/**
-	 * Methode wird immer ausgefhrt nach Ende des Scriptes
+	 * Methode wird immer ausgefÃ¼hrt nach Ende des Scriptes
 	 * 
 	 */
 	public Object always() {
@@ -146,7 +146,7 @@ public abstract class AbasBaseScript extends GroovyFOScript {
 	
 
 	/**
-	 * Methode wird beim Auftretten einer unbehandelten Ausnahme ausgefhrt
+	 * Methode wird beim Auftretten einer unbehandelten Ausnahme ausgefÃ¼hrt
 	 */
 	public Object onerror(Object ex) {
 		if (ex instanceof Exception) {
@@ -158,9 +158,9 @@ public abstract class AbasBaseScript extends GroovyFOScript {
 	}
 	
 	/**
-	 * Falls eine Eigenschaft nicht definiert ist, wird die Eigenschaft als String zurck gegeben
+	 * Falls eine Eigenschaft nicht definiert ist, wird die Eigenschaft als String zurÃ¼ck gegeben
 	 * 
-	 * so wird folgendes m”glich: 
+	 * so wird folgendes mÃ¶glich: 
 	 * 	- m["variable"] -> m.variable
 	 *  - hole("Teil")  -> hole(Teil)
 	 *  

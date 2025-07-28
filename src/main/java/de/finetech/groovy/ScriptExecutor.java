@@ -35,10 +35,10 @@ import groovy.lang.GroovySystem;
 import groovy.lang.Script;
 
 /**
- * @author Michael Rothenb갷her, Finetech GmbH & Co. KG
+ * @author Michael Rothenb체cher, Finetech GmbH & Co. KG
  * 
  *         JFOP erwartet als ersten Parameter das Groovyscript welches
- *         ausgef갿rt werden soll und 갶ergibt alle Parameter an dieses weiter
+ *         ausgef체hrt werden soll und 체bergibt alle Parameter an dieses weiter
  * 
  */
 public class ScriptExecutor implements ContextRunnable {
@@ -67,14 +67,14 @@ public class ScriptExecutor implements ContextRunnable {
 	private static GroovyShell getShell(Binding binding) {
 		GroovyShell shell;
 		// Imports festlegen damit diese nicht selbst
-		// hinzugef꼏t werden m꼜sen
+		// hinzugef채gt werden m채ssen
 		CompilerConfiguration cc = new CompilerConfiguration();
 
 		ImportCustomizer ic = new ImportCustomizer();
 		// abas Standard
 		ic.addStarImports("de.abas.eks.jfop.remote");
 		// ic.addStaticStars("de.abas.eks.jfop.remote.EKS");
-		// Helferklassen f걊 GroovyFO
+		// Helferklassen f체r GroovyFO
 		ic.addStarImports("de.finetech.groovy");
 		ic.addStarImports("de.finetech.groovy.utils");
 		ic.addStarImports("de.finetech.groovy.utils.datatypes");
@@ -89,7 +89,7 @@ public class ScriptExecutor implements ContextRunnable {
 		// Basisklasse festlegen
 		cc.setScriptBaseClass("de.finetech.groovy.AbasBaseScript");
 
-		// Script ausf갿ren
+		// Script ausf체hren
 		GroovyClassLoader loader = new GroovyClassLoader();
 		shell = new GroovyShell(loader, binding, cc);
 
@@ -101,7 +101,7 @@ public class ScriptExecutor implements ContextRunnable {
 		boolean error = false;
 		
 		EKS.eingabe("DATEI.F");
-		// Genug Parameter 꼉ergben?
+		// Genug Parameter 채bergben?
 		if (arg1.length > 1) {
 			File groovyScript = new File(arg1[1]);
 			// existiert die Datei ?
@@ -134,25 +134,25 @@ public class ScriptExecutor implements ContextRunnable {
 						error = false;
 
 					} catch (CommandException e) {
-						// FIXME Sprach unabh꼗gigkeit
+						// FIXME Sprach unabh채ngigkeit
 						FO.fehler("Unbehandelte Ausnahme in " + arg1[1]+"("+GroovySystem.getVersion()+"/"+AbasBaseScript.version+"):\n"+ getStacktrace(e));
 						log.error("Unbehandelte Ausnahme in " + arg1[1]+"("+GroovySystem.getVersion()+"/"+AbasBaseScript.version+"):\n", StackTraceUtils.deepSanitize(e));
 						error = true;
 					} catch (AbortedException e) {
-						// FIXME Sprach unabh꼗gigkeit
+						// FIXME Sprach unabh채ngigkeit
 						FO.fehler("FOP("+arg1[1]+") abgebrochen \nFOP wurde durch Anwender abgebrochen");
 						log.error("FOP("+arg1[1]+") abgebrochen \nFOP wurde durch Anwender abgebrochen");
 						error = true;
 					} catch (CompilationFailedException e) {
-						// FIXME Sprach unabh꼗gigkeit
-						// FO.box("꼉ersetzung fehlgeschlagen", "GroovyFO konnte
-						// das Script nicht 꼉ersetzen: "
+						// FIXME Sprach unabh채ngigkeit
+						// FO.box("채bersetzung fehlgeschlagen", "GroovyFO konnte
+						// das Script nicht 채bersetzen: "
 						// + e.getMessage() + "\n" + getStacktrace(e));
-						FO.fehler("쉇ersetzung fehlgeschlagen ("+arg1[1]+"):\n"+ getStacktrace(e));
-						log.error("쉇ersetzung fehlgeschlagen ("+arg1[1]+"):\n", StackTraceUtils.deepSanitize(e));
+						FO.fehler("횥bersetzung fehlgeschlagen ("+arg1[1]+"):\n"+ getStacktrace(e));
+						log.error("횥bersetzung fehlgeschlagen ("+arg1[1]+"):\n", StackTraceUtils.deepSanitize(e));
 						error = true;
 					} catch (Exception e) {
-						// FIXME Sprach unabh꼗gigkeit
+						// FIXME Sprach unabh채ngigkeit
 						// FO.box("Unbehandelte Ausnahme in " + arg1[1],
 						// getStacktrace(e));
 						error = true;
@@ -167,24 +167,24 @@ public class ScriptExecutor implements ContextRunnable {
 							shell.getClassLoader().clearCache();
 						// shell = null;
 						if (error) {
-							// FIXME m봥lichkeit f걊 b봲en Fehler
+							// FIXME m철glichkeit f체r b철sen Fehler
 							return -1;
 						}
 					}
 				} else {
-					// FIXME Sprach unabh꼗gigkeit
+					// FIXME Sprach unabh채ngigkeit
 					FO.fehler("Unzureichende Argumente\nGroovy Script "+arg1[1]+" ist keine Datei!");
 					log.error("Unzureichende Argumente\nGroovy Script "+arg1[1]+" ist keine Datei!");
 					return -1;
 				}
 			} else {
-				// FIXME Sprach unabh꼗gigkeit
+				// FIXME Sprach unabh채ngigkeit
 				FO.fehler("Unzureichende Argumente\nGroovy Script "+arg1[1]+" existiert nicht!");
 				log.error("Unzureichende Argumente\nGroovy Script "+arg1[1]+" existiert nicht!");
 				return -1;
 			}
 		} else {
-			// FIXME Sprach unabh꼗gigkeit
+			// FIXME Sprach unabh채ngigkeit
 			FO.fehler("Unzureichende Argumente\nkeine Groovy Script angegeben!");
 			log.error("Unzureichende Argumente\\nkeine Groovy Script angegeben!", arg1);
 			return -1;
