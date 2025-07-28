@@ -1,42 +1,42 @@
 plugins {
-	id "de.abas.esdk" version "1.4.0"
+    id "de.abas.esdk" version "1.4.0"
 }
 
 repositories {
-	exclusiveContent {
-		forRepository {
-			flatDir {
-				// mapped directory containing clientdir libs
-				dirs 'erpsync/clientdir/lib'
-			}
-		}
-		filter {
-			// restrict this repository to lookup clientdir libs only
-			includeGroup('de.abas.clientdir')
-		}
-	}
-	exclusiveContent {
-		forRepository {
-			flatDir {
-				// mapped directory containing homedir libs
-				dirs 'erpsync/homedir/lib'
-			}
-		}
-		filter {
-			// restrict this repository to lookup homedir libs only
-			includeGroup('de.abas.homedir')
-		}
-	}
-	// abas.maven-pubic repository for additional ESDK libraries
-	maven {
-		url 'https://abasartifactory.jfrog.io/artifactory/abas.maven-public/'
-		mavenContent {
-			releasesOnly()
-		}
-		content {
-			includeGroupByRegex('de\\.abas\\..*')
-		}
-	}
+    exclusiveContent {
+        forRepository {
+            flatDir {
+                // mapped directory containing clientdir libs
+                dirs 'erpsync/clientdir/lib'
+            }
+        }
+        filter {
+            // restrict this repository to lookup clientdir libs only
+            includeGroup('de.abas.clientdir')
+        }
+    }
+    exclusiveContent {
+        forRepository {
+            flatDir {
+                // mapped directory containing homedir libs
+                dirs 'erpsync/homedir/lib'
+            }
+        }
+        filter {
+            // restrict this repository to lookup homedir libs only
+            includeGroup('de.abas.homedir')
+        }
+    }
+    // abas.maven-pubic repository for additional ESDK libraries
+    maven {
+        url 'https://abasartifactory.jfrog.io/artifactory/abas.maven-public/'
+        mavenContent {
+            releasesOnly()
+        }
+        content {
+            includeGroupByRegex('de\\.abas\\..*')
+        }
+    }
 //    // Include if using external libraries from public repository
 //    mavenCentral()
 }
@@ -52,49 +52,49 @@ Boolean useErp2101Libs = targetErpVersion.majorVersion >= 2101
 
 // ---- Java 17 is required for this section -----
 if (!(System.getProperty('java.version').startsWith('17'))) {
-	throw new GradleException("!!!!! Java version ${System.getProperty('java.version')} is not supported.\n" +
-			'      Please use Java 17 to build this project.')
+    throw new GradleException("!!!!! Java version ${System.getProperty('java.version')} is not supported.\n" +
+            '      Please use Java 17 to build this project.')
 }
 // For Abas 2024.Q3 and above create code for Java 17
 // See https://docs.gradle.org/current/userguide/building_java_projects.html#sec:compiling_with_release
 Boolean useJava17 = targetErpVersion.majorVersion >= 2200
 compileJava {
-	options.release = useJava17 ? 17 : 8
+    options.release = useJava17 ? 17 : 8
 }
 compileTestJava {
-	options.release = useJava17 ? 17 : 8
+    options.release = useJava17 ? 17 : 8
 }
 compileIntegTestJava {
-	options.release = useJava17 ? 17 : 8
+    options.release = useJava17 ? 17 : 8
 }
 // ---- End of Java 17 section -----
 
 
 esdk {
-	app {
-		name = "groovyfo"
-		vendorId = "rm"
-		appId = "grvfo"
-		shared = false
-		infosystems = []
-		tables = []
-		screens = [:]
-		data = []
-		enums = []
-		namedTypes = []
-		languages = "DA"
-		essentialsVersions = ["2017r1n00-2017r4n16", "2018r1n00-2018r4n16", "2019r1n00-2019r4n20p46"]
-	}
+    app {
+        name = "groovyfo"
+        vendorId = "rm"
+        appId = "grvfo"
+        shared = false
+        infosystems = []
+        tables = []
+        screens = [:]
+        data = []
+        enums = []
+        namedTypes = []
+        languages = "DA"
+        essentialsVersions = ["2017r1n00-2017r4n16", "2018r1n00-2018r4n16", "2019r1n00-2019r4n20p46"]
+    }
 
-	abas {
-		homeDir = ABAS_HOMEDIR
-		clientDir = ABAS_CLIENTDIR
-		clientId = ABAS_CLIENTID
-		edpHost = EDP_HOST
-		edpPort = EDP_PORT.toInteger()
-		edpUser = EDP_USER
-		edpPassword = EDP_PASSWORD
-	}
+    abas {
+        homeDir = ABAS_HOMEDIR
+        clientDir = ABAS_CLIENTDIR
+        clientId = ABAS_CLIENTID
+        edpHost = EDP_HOST
+        edpPort = EDP_PORT.toInteger()
+        edpUser = EDP_USER
+        edpPassword = EDP_PASSWORD
+    }
 
 //	nexus {
 //		nexusHost = NEXUS_HOST
@@ -105,77 +105,77 @@ esdk {
 //		nexusVersion = NEXUS_VERSION
 //	}
 
-	ssh {
-		host = SSH_HOST
-		port = SSH_PORT.toInteger()
-		user = SSH_USER
-		password = SSH_PASSWORD
-		key = SSH_KEY
-	}
-	installType = "SSH"
+    ssh {
+        host = SSH_HOST
+        port = SSH_PORT.toInteger()
+        user = SSH_USER
+        password = SSH_PASSWORD
+        key = SSH_KEY
+    }
+    installType = "SSH"
 }
 
 dependencies {
-	constraints {
-		implementation("org.apache.logging.log4j:log4j-core") {
-			version {
-				strictly("[2.17, 3[")
-				prefer("2.17.1")
-			}
-			because("CVE-2021-44228, CVE-2021-45046, CVE-2021-45105: " +
-					"Log4j vulnerable to remote code execution and other critical security vulnerabilities")
-		}
-	}
+    constraints {
+        implementation("org.apache.logging.log4j:log4j-core") {
+            version {
+                strictly("[2.17, 3[")
+                prefer("2.17.1")
+            }
+            because("CVE-2021-44228, CVE-2021-45046, CVE-2021-45105: " +
+                    "Log4j vulnerable to remote code execution and other critical security vulnerabilities")
+        }
+    }
 
-	if (useErp2101Libs) {
-		// Some libraries have been renamed in Abas 21.1 - here we use the new names
+    if (useErp2101Libs) {
+        // Some libraries have been renamed in Abas 21.1 - here we use the new names
 
-		// AJO interfaces
-		provided 'de.abas.homedir:abas-ajo-db:1.0.0'
-		// fixed standard enumerations
-		provided 'de.abas.homedir:abas-ajo-common-type-enums-base:1.0.0'
-		// generated standard enumerations
-		provided 'de.abas.homedir:abas-ajo-common-type-enums-standard:1.0.0'
-		// base types, super class for enumerations
-		provided 'de.abas.homedir:abas-ajo-common:1.0.0'
-		// JFOP-Server API
-		provided 'de.abas.homedir:abas-jfop-rt-api:1.0.0'
-		// Classes to execute FO commands
-		//provided 'de.abas.homedir:abas-jfop-api:1.0.0'
+        // AJO interfaces
+        provided 'de.abas.homedir:abas-ajo-db:1.0.0'
+        // fixed standard enumerations
+        provided 'de.abas.homedir:abas-ajo-common-type-enums-base:1.0.0'
+        // generated standard enumerations
+        provided 'de.abas.homedir:abas-ajo-common-type-enums-standard:1.0.0'
+        // base types, super class for enumerations
+        provided 'de.abas.homedir:abas-ajo-common:1.0.0'
+        // JFOP-Server API
+        provided 'de.abas.homedir:abas-jfop-rt-api:1.0.0'
+        // Classes to execute FO commands
+        //provided 'de.abas.homedir:abas-jfop-api:1.0.0'
 
-		// AJO-AXI2 classes
-		implementation 'de.abas.homedir:abas-ajo-axi2:1.0.0'
-		// AJO-AXI classes
-		implementation 'de.abas.homedir:abas-ajo-axi:1.0.0'
-		// AJO interface implementation
-		implementation 'de.abas.homedir:abas-ajo-db-internal:1.0.0'
-		// Helper classes for AJO framework generator
-		//implementation 'de.abas.homedir:abas-ajo-db-common:1.0.0'
-		// Helper classes to handle selections, fields, meta data, buffers, and contexts
-		implementation 'de.abas.homedir:abas-ajo-db-util:1.0.0'
-	} else {
-		// AJO interfaces
-		provided 'de.abas.homedir:abas-db-base:1.0.0'
-		// standard enumerations
-		provided 'de.abas.homedir:abas-enums:1.0.0'
-		// base types, super class for enumerations
-		provided 'de.abas.homedir:abas-erp-common:1.0.0'
-		// JFOP-Server API
-		provided 'de.abas.homedir:abas-jfop-runtime-api:1.0.0'
-		// Classes to execute FO commands
-		//provided 'de.abas.homedir:abas-jfopapi:1.0.0'
+        // AJO-AXI2 classes
+        implementation 'de.abas.homedir:abas-ajo-axi2:1.0.0'
+        // AJO-AXI classes
+        implementation 'de.abas.homedir:abas-ajo-axi:1.0.0'
+        // AJO interface implementation
+        implementation 'de.abas.homedir:abas-ajo-db-internal:1.0.0'
+        // Helper classes for AJO framework generator
+        //implementation 'de.abas.homedir:abas-ajo-db-common:1.0.0'
+        // Helper classes to handle selections, fields, meta data, buffers, and contexts
+        implementation 'de.abas.homedir:abas-ajo-db-util:1.0.0'
+    } else {
+        // AJO interfaces
+        provided 'de.abas.homedir:abas-db-base:1.0.0'
+        // standard enumerations
+        provided 'de.abas.homedir:abas-enums:1.0.0'
+        // base types, super class for enumerations
+        provided 'de.abas.homedir:abas-erp-common:1.0.0'
+        // JFOP-Server API
+        provided 'de.abas.homedir:abas-jfop-runtime-api:1.0.0'
+        // Classes to execute FO commands
+        //provided 'de.abas.homedir:abas-jfopapi:1.0.0'
 
-		// AJO-AXI2 classes
-		implementation 'de.abas.homedir:abas-axi2:1.0.0'
-		// AJO-AXI classes
-		implementation 'de.abas.homedir:abas-axi:1.0.0'
-		// AJO interface implementation
-		implementation 'de.abas.homedir:abas-db-internal:1.0.0'
-		// Helper classes for AJO framework generator
-		//implementation 'de.abas.homedir:abas-db-common:1.0.0'
-		// Helper classes to handle selections, fields, meta data, buffers, and contexts
-		implementation 'de.abas.homedir:abas-db-util:1.0.0'
-	}
+        // AJO-AXI2 classes
+        implementation 'de.abas.homedir:abas-axi2:1.0.0'
+        // AJO-AXI classes
+        implementation 'de.abas.homedir:abas-axi:1.0.0'
+        // AJO interface implementation
+        implementation 'de.abas.homedir:abas-db-internal:1.0.0'
+        // Helper classes for AJO framework generator
+        //implementation 'de.abas.homedir:abas-db-common:1.0.0'
+        // Helper classes to handle selections, fields, meta data, buffers, and contexts
+        implementation 'de.abas.homedir:abas-db-util:1.0.0'
+    }
 
     provided "de.abas.homedir:jedp:1.0.0"
     provided "de.abas.homedir:abas-jfopapi:1.0.0"
@@ -193,19 +193,19 @@ dependencies {
     implementation 'org.codehaus.groovy:groovy-dateutil:2.5.13'
 
 
-	// Base classes to access ERP via JFOP context.
-	// Among other things, the buffer classes are stored here (e.g. GlobalTextBuffer, ScreenBuffer, UserTextBuffer).
-	implementation 'de.abas.homedir:abas-jfop-base:1.0.0'
-	runtimeOnly 'de.abas.homedir:commons-collections:1.0.0'
-	// Supports jcl logging by mapping it to slf4j
-	runtimeOnly 'de.abas.homedir:jcl-over-slf4j:1.0.0'
-	// Logging API
-	runtimeOnly 'de.abas.homedir:slf4j-api:1.0.0'
+    // Base classes to access ERP via JFOP context.
+    // Among other things, the buffer classes are stored here (e.g. GlobalTextBuffer, ScreenBuffer, UserTextBuffer).
+    implementation 'de.abas.homedir:abas-jfop-base:1.0.0'
+    runtimeOnly 'de.abas.homedir:commons-collections:1.0.0'
+    // Supports jcl logging by mapping it to slf4j
+    runtimeOnly 'de.abas.homedir:jcl-over-slf4j:1.0.0'
+    // Logging API
+    runtimeOnly 'de.abas.homedir:slf4j-api:1.0.0'
 
     // custom
-	runtimeOnly 'io.github.http-builder-ng:http-builder-ng-core:1.0.4'
-	runtimeOnly 'org.codehaus.groovy:groovy-all:2.5.13'
-	runtimeOnly 'org.codehaus.groovy:groovy-dateutil:2.5.13'
+    runtimeOnly 'io.github.http-builder-ng:http-builder-ng-core:1.0.4'
+    runtimeOnly 'org.codehaus.groovy:groovy-all:2.5.13'
+    runtimeOnly 'org.codehaus.groovy:groovy-dateutil:2.5.13'
 
     testImplementation "junit:junit:4.12"
     testImplementation "org.hamcrest:hamcrest-all:1.3"
