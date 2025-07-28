@@ -12,7 +12,7 @@ public class GroovyFOTest extends EsdkIntegTest {
 	@Test
 	public void executeTest() {
 	    RunFOP runFOP = ctx.openInfosystem(RunFOP.class);
-		runFOP.setKommando("java:GroovyFO@grvfo ow1/GROOVYFO.UNITTEST");
+		runFOP.setKommando("java:GroovyFO@grvfo ow1/GROOVYFO.UNITTEST.GROOVY");
 		runFOP.invokeStart();
 
 		for(String msg: this.getErrors()) {

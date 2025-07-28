@@ -31,11 +31,11 @@ assert u.xt1 == "Geht"
 assert u.xt1 != u.xt2
 u.xt1 += " nicht"
 assert u.xt1 == u.xt2
-def foo = (u.xt1)+" "+u.xt2
+def foo = u.xt1+" "+u.xt2
 assert foo.equals("Geht nicht Geht nicht")
 
 
-//TODO Funktionen prÅfen F|....
+//TODO Funktionen pr√ºfen F|....
 assert F.regmatch("u|xt1", "Geht nicht") == true
 
 
@@ -54,7 +54,7 @@ u.xbis = "12.05.2020"
 assert (u.xvon % 7) == 7
 assert (u.xvon % 1) == "Sonntag"
 assert (u.xvon & u.xbis) == 1
-// nÑchste Arbeitstag
+// n√§chste Arbeitstag
 u.xvon = u.xvon & 0
 u.xbis = "11.05.2020"
 assert u.xvon == u.xbis
