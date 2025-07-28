@@ -6,7 +6,7 @@ pluginManagement {
                 includeGroupByRegex('de\\.abas\\..*')
             }
         }
-        //maven { url = uri("https://mvnrepository.com/artifact/") }
+        maven { url = uri("https://repo1.maven.org/maven2/") }
 //        maven { url = uri("https://registry.abas.sh/artifactory/abas.maven-public/") }
         //maven { url = uri("https://abasartifactory.jfrog.io/ui/native/abas.maven-public/") }
 //        maven { url = uri("http://$NEXUS_HOST:$NEXUS_PORT/nexus/content/repositories/$NEXUS_NAME-SNAPSHOT") }
