@@ -5,9 +5,9 @@ services:
     #
     erp:
       #'Repository Path' taken from https://abasartifactory.jfrog.io/ui/repos/tree/General/customer/abas/neumand
-      image: abasartifactory.jfrog.io/customer/abas/neumand:2019r4n20p46
+      image: "abasartifactory.jfrog.io/customer/abas/neumand:${targetErpVersion}"
       init: true
-      container_name: "erp"
+      container_name: "${targetErpVersion:-erp}"
 
       ports:
       - "${SSH_TEST_PORT:-2205}:22"
