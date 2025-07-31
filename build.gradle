@@ -191,8 +191,8 @@ dependencies {
         implementation 'org.apache.groovy:groovy-dateutil:4.0.15'
     } else {
         implementation "de.abas.homedir:abas-jfop-runtime:1.0.0"
-        implementation 'org.apache.groovy:groovy-all:2.5.13'
-        implementation 'org.apache.groovy:groovy-dateutil:2.5.13'
+        implementation 'org.codehaus.groovy:groovy-all:2.5.13'
+        implementation 'org.codehaus.groovy:groovy-dateutil:2.5.13'
     }
 
     implementation "de.abas.homedir:abas-jfop-base:1.0.0"
@@ -214,8 +214,8 @@ dependencies {
         runtimeOnly 'org.apache.groovy:groovy-all:4.0.15'
         runtimeOnly 'org.apache.groovy:groovy-dateutil:4.0.15'
     } else {
-        runtimeOnly 'org.apache.groovy:groovy-all:2.5.13'
-        runtimeOnly 'org.apache.groovy:groovy-dateutil:2.5.13'
+        runtimeOnly 'org.codehaus.groovy:groovy-all:2.5.13'
+        runtimeOnly 'org.codehaus.groovy:groovy-dateutil:2.5.13'
     }
 
     runtimeOnly 'io.github.http-builder-ng:http-builder-ng-core:1.0.4'
