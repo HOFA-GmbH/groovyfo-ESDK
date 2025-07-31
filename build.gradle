@@ -96,15 +96,6 @@ esdk {
         edpPassword = EDP_PASSWORD
     }
 
-//	nexus {
-//		nexusHost = NEXUS_HOST
-//		nexusPort = NEXUS_PORT.toInteger()
-//		nexusRepoName = NEXUS_NAME
-//		nexusUserName = NEXUS_USER_NAME
-//		nexusPassword = NEXUS_PASSWORD
-//		nexusVersion = NEXUS_VERSION
-//	}
-
     ssh {
         host = SSH_HOST
         port = SSH_PORT.toInteger()
