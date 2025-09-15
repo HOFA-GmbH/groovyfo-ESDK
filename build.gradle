@@ -2,6 +2,23 @@ plugins {
     id "de.abas.esdk" version "1.4.0"
 }
 
+Properties environment = new Properties()
+
+file('.env').readLines().each() {
+    if (!it.isEmpty() && !it.startsWith("#")) {
+        def pos = it.indexOf("=")
+        def key = it.substring(0, pos)
+        def value = it.substring(pos + 1)
+
+        if (System.getenv(key) == null) {
+            environment.setProperty(key, value)
+        }
+    }
+}
+
+System.out << "targetErpVersion? ${targetErpVersion}\n"
+System.out << "environment.targetErpVersion? ${environment.targetErpVersion}\n"
+
 repositories {
     exclusiveContent {
         forRepository {
@@ -45,9 +62,9 @@ group = "de.finetech.groovy"
 
 // Create flag to simplify ERP version specific configuration settings below.
 // Useful to select different AJO libraries or 'esdk.app.essentialsVersions'.
-// 'targetErpVersion' can be provided in 'gradle.properties' or as command line parameter.
+// 'environment.targetErpVersion' can be provided in '.env'.
 // Default is a version below '2101' (i.e. before Abas 21.1).
-Boolean useErp2101Libs = targetErpVersion.majorVersion >= 2101
+Boolean useErp2101Libs = environment.targetErpVersion >= '2101'
 
 
 // ---- Java 17 is required for this section -----
@@ -57,7 +74,7 @@ if (!(System.getProperty('java.version').startsWith('17'))) {
 }
 // For Abas 2024.Q3 and above create code for Java 17
 // See https://docs.gradle.org/current/userguide/building_java_projects.html#sec:compiling_with_release
-Boolean useJava17 = targetErpVersion.majorVersion >= 2200
+Boolean useJava17 = environment.targetErpVersion >= '2200'
 compileJava {
     options.release = useJava17 ? 17 : 8
 }
