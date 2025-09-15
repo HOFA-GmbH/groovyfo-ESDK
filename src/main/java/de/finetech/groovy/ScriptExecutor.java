@@ -42,190 +42,192 @@ import groovy.lang.Script;
  * 
  */
 public class ScriptExecutor implements ContextRunnable {
-	
-	private static final Logger log = LoggerFactory.getLogger(ScriptExecutor.class);
-	
-	public static String readFile(String path, Charset encoding) throws IOException {
-		byte[] encoded = Files.readAllBytes(Paths.get(path));
-		return new String(encoded, encoding);
-	}
 
-	public static String[] findPackageNamesStartingWith(String prefix) {
-		Package[] packages = Package.getPackages();
-		List<String> list = new ArrayList<String>();
-		for (Package pack : packages) {
-			if (pack.getName().startsWith(prefix)) {
-				// System.out.println("DEBUG: "+pack.getName());
-				list.add(pack.getName());
-			}
-		}
-		return list.toArray(new String[0]);
-	}
+    private static final Logger log = LoggerFactory.getLogger(ScriptExecutor.class);
 
-	// private static GroovyShell shell;
+    public static String readFile(String path, Charset encoding) throws IOException {
+        byte[] encoded = Files.readAllBytes(Paths.get(path));
+        return new String(encoded, encoding);
+    }
 
-	private static GroovyShell getShell(Binding binding) {
-		GroovyShell shell;
-		// Imports festlegen damit diese nicht selbst
-		// hinzugefägt werden mässen
-		CompilerConfiguration cc = new CompilerConfiguration();
+    public static String[] findPackageNamesStartingWith(String prefix) {
+        Package[] packages = Package.getPackages();
+        List<String> list = new ArrayList<String>();
+        for (Package pack : packages) {
+            if (pack.getName().startsWith(prefix)) {
+                // System.out.println("DEBUG: "+pack.getName());
+                list.add(pack.getName());
+            }
+        }
+        return list.toArray(new String[0]);
+    }
 
-		ImportCustomizer ic = new ImportCustomizer();
-		// abas Standard
-		ic.addStarImports("de.abas.eks.jfop.remote");
-		// ic.addStaticStars("de.abas.eks.jfop.remote.EKS");
-		// Helferklassen für GroovyFO
-		ic.addStarImports("de.finetech.groovy");
-		ic.addStarImports("de.finetech.groovy.utils");
-		ic.addStarImports("de.finetech.groovy.utils.datatypes");
-		ic.addStarImports("de.finetech.utils", "de.finetech.utils.charts","de.finetech.utils.parallel");
-		ic.addImports("java.awt.Color", "java.util.Calendar", "java.text.SimpleDateFormat", "java.text.DateFormat",
-				"java.util.Date");
+    // private static GroovyShell shell;
 
-		// alle abas db Packages importieren
-		ic.addStarImports(ScriptExecutor.findPackageNamesStartingWith("de.abas.erp.db"));
-		
-		cc.addCompilationCustomizers(ic);
-		// Basisklasse festlegen
-		cc.setScriptBaseClass("de.finetech.groovy.AbasBaseScript");
+    private static GroovyShell getShell(Binding binding) {
+        GroovyShell shell;
+        // Imports festlegen damit diese nicht selbst
+        // hinzugefägt werden mässen
+        CompilerConfiguration cc = new CompilerConfiguration();
 
-		// Script ausführen
-		GroovyClassLoader loader = new GroovyClassLoader();
-		shell = new GroovyShell(loader, binding, cc);
+        ImportCustomizer ic = new ImportCustomizer();
+        // abas Standard
+        ic.addStarImports("de.abas.eks.jfop.remote");
+        // ic.addStaticStars("de.abas.eks.jfop.remote.EKS");
+        // Helferklassen für GroovyFO
+        ic.addStarImports("de.finetech.groovy");
+        ic.addStarImports("de.finetech.groovy.utils");
+        ic.addStarImports("de.finetech.groovy.utils.datatypes");
+        ic.addStarImports("de.finetech.utils", "de.finetech.utils.charts", "de.finetech.utils.parallel");
+        ic.addImports("java.awt.Color", "java.util.Calendar", "java.text.SimpleDateFormat", "java.text.DateFormat",
+                "java.util.Date");
 
-		return shell;
-	}
+        // alle abas db Packages importieren
+        ic.addStarImports(ScriptExecutor.findPackageNamesStartingWith("de.abas.erp.db"));
 
-	public static int executeScript(FOPSessionContext arg0, String[] arg1) {
-		GroovyShell shell = null;
-		boolean error = false;
-		
-		EKS.eingabe("DATEI.F");
-		// Genug Parameter äbergben?
-		if (arg1.length > 1) {
-			File groovyScript = new File(arg1[1]);
-			// existiert die Datei ?
-			if (groovyScript.exists()) {
-				// ist es eine Datei ?
-				if (groovyScript.isFile()) {
-					MDC.put("SCRIPT", arg1[1]);
-					Object o = null;
-					Script gscript = null;
-					try {
+        cc.addCompilationCustomizers(ic);
+        // Basisklasse festlegen
+        cc.setScriptBaseClass("de.finetech.groovy.AbasBaseScript");
 
-						Binding binding = new Binding();
-						// Parameter weitergeben
-						binding.setVariable("arg0", arg0);
-						binding.setVariable("args", arg1);
-						binding.setVariable("scriptfile", arg1[1]);
-						binding.setVariable("dbContext", arg0.getDbContext());
-						
-						boolean debug = false;
-						for (String key : arg1) {
-							if (key.equals("GROOVYFODEBUG")) {
-								debug = true;
-								break;
-							}
-						}
-						binding.setVariable("GROOVYFODEBUG", debug);
-						shell = getShell(binding); 
-						gscript = shell.parse(ScriptExecutor.readFile(arg1[1], Charset.forName("UTF-8")).intern());
-						o = gscript.run();
-						error = false;
+        // Script ausführen
+        GroovyClassLoader loader = new GroovyClassLoader();
+        shell = new GroovyShell(loader, binding, cc);
 
-					} catch (CommandException e) {
-						// FIXME Sprach unabhängigkeit
-						FO.fehler("Unbehandelte Ausnahme in " + arg1[1]+"("+GroovySystem.getVersion()+"/"+AbasBaseScript.version+"):\n"+ getStacktrace(e));
-						log.error("Unbehandelte Ausnahme in " + arg1[1]+"("+GroovySystem.getVersion()+"/"+AbasBaseScript.version+"):\n", StackTraceUtils.deepSanitize(e));
-						error = true;
-					} catch (AbortedException e) {
-						// FIXME Sprach unabhängigkeit
-						FO.fehler("FOP("+arg1[1]+") abgebrochen \nFOP wurde durch Anwender abgebrochen");
-						log.error("FOP("+arg1[1]+") abgebrochen \nFOP wurde durch Anwender abgebrochen");
-						error = true;
-					} catch (CompilationFailedException e) {
-						// FIXME Sprach unabhängigkeit
-						// FO.box("äbersetzung fehlgeschlagen", "GroovyFO konnte
-						// das Script nicht äbersetzen: "
-						// + e.getMessage() + "\n" + getStacktrace(e));
-						FO.fehler("Übersetzung fehlgeschlagen ("+arg1[1]+"):\n"+ getStacktrace(e));
-						log.error("Übersetzung fehlgeschlagen ("+arg1[1]+"):\n", StackTraceUtils.deepSanitize(e));
-						error = true;
-					} catch (Exception e) {
-						// FIXME Sprach unabhängigkeit
-						// FO.box("Unbehandelte Ausnahme in " + arg1[1],
-						// getStacktrace(e));
-						error = true;
-						throw new FOPException(e.getMessage(), e);
-					} finally {
-						clearGroovyClassesCache();
-						if (o != null)
-							GroovySystem.getMetaClassRegistry().removeMetaClass(o.getClass());
-						if (gscript != null)
-							GroovySystem.getMetaClassRegistry().removeMetaClass(gscript.getClass());
-						if (shell != null && shell.getClassLoader() != null)
-							shell.getClassLoader().clearCache();
-						// shell = null;
-						if (error) {
-							// FIXME möglichkeit für bösen Fehler
-							return -1;
-						}
-					}
-				} else {
-					// FIXME Sprach unabhängigkeit
-					FO.fehler("Unzureichende Argumente\nGroovy Script "+arg1[1]+" ist keine Datei!");
-					log.error("Unzureichende Argumente\nGroovy Script "+arg1[1]+" ist keine Datei!");
-					return -1;
-				}
-			} else {
-				// FIXME Sprach unabhängigkeit
-				FO.fehler("Unzureichende Argumente\nGroovy Script "+arg1[1]+" existiert nicht!");
-				log.error("Unzureichende Argumente\nGroovy Script "+arg1[1]+" existiert nicht!");
-				return -1;
-			}
-		} else {
-			// FIXME Sprach unabhängigkeit
-			FO.fehler("Unzureichende Argumente\nkeine Groovy Script angegeben!");
-			log.error("Unzureichende Argumente\\nkeine Groovy Script angegeben!", arg1);
-			return -1;
-		}
-		return 0;
-	}
+        return shell;
+    }
 
-	@Override
-	public int runFop(FOPSessionContext arg0, String[] arg1) throws FOPException {
-		return ScriptExecutor.executeScript(arg0, arg1);
-	}
+    public static int executeScript(FOPSessionContext arg0, String[] arg1) {
+        GroovyShell shell = null;
+        boolean error = false;
 
-	private static String getStacktrace(Exception e) {
-		StringWriter sw = new StringWriter();
-		PrintWriter pw = new PrintWriter(sw);
-		e.printStackTrace(pw);
-		return sw.toString();
-	}
+        EKS.eingabe("DATEI.F");
+        // Genug Parameter übergeben?
+        if (arg1.length <= 1) {
+            // FIXME Sprachunabhängigkeit
+            FO.fehler("Unzureichende Argumente\nkeine Groovy Script angegeben!");
+            log.error("Unzureichende Argumente\\nkeine Groovy Script angegeben!");
+            return -1;
+        }
 
-	protected static boolean clearGroovyClassesCache() {
-		try {
-			Class<MetaClassRegistryImpl> mcriClass = MetaClassRegistryImpl.class;
+        File groovyScript = new File(arg1[1]);
+        // Existiert die Datei?
+        if (!groovyScript.exists()) {
+            // FIXME Sprachunabhängigkeit
+            FO.fehler("Unzureichende Argumente\nGroovy Script " + arg1[1] + " existiert nicht!");
+            log.error("Unzureichende Argumente\nGroovy Script " + arg1[1] + " existiert nicht!");
+            return -1;
+        }
 
-			Field constantMetaClassesField = mcriClass.getDeclaredField("constantMetaClasses");
-			constantMetaClassesField.setAccessible(true);
+        // Ist es eine Datei?
+        if (!groovyScript.isFile()) {
+            // FIXME Sprachunabhängigkeit
+            FO.fehler("Unzureichende Argumente\nGroovy Script " + arg1[1] + " ist keine Datei!");
+            log.error("Unzureichende Argumente\nGroovy Script " + arg1[1] + " ist keine Datei!");
+            return -1;
+        }
 
-			Field constantMetaClassCountField = mcriClass.getDeclaredField("constantMetaClassCount");
-			constantMetaClassCountField.setAccessible(true);
+        MDC.put("SCRIPT", arg1[1]);
+        Object o = null;
+        Script gscript = null;
+        try {
 
-			Class<GroovySystem> gsClass = GroovySystem.class;
-			Field metaClassRegistryField = gsClass.getDeclaredField("META_CLASS_REGISTRY");
-			metaClassRegistryField.setAccessible(true);
-			MetaClassRegistryImpl mcri = (MetaClassRegistryImpl) metaClassRegistryField.get(null);
-			ConcurrentReaderHashMap constantMetaClasses = (ConcurrentReaderHashMap) constantMetaClassesField.get(mcri);
+            Binding binding = new Binding();
+            // Parameter weitergeben
+            binding.setVariable("arg0", arg0);
+            binding.setVariable("args", arg1);
+            binding.setVariable("scriptfile", arg1[1]);
+            binding.setVariable("dbContext", arg0.getDbContext());
 
-			constantMetaClasses.clear();
-			constantMetaClassCountField.set(mcri, 0);
+            boolean debug = false;
+            for (String key : arg1) {
+                if (key.equals("GROOVYFODEBUG")) {
+                    debug = true;
+                    break;
+                }
+            }
+            binding.setVariable("GROOVYFODEBUG", debug);
+            shell = getShell(binding);
+            gscript = shell.parse(ScriptExecutor.readFile(arg1[1], Charset.forName("UTF-8")).intern());
+            o = gscript.run();
+            error = false;
 
-			return true;
-		} catch (Exception e) {
-			return false;
-		}
-	}
+        } catch (CommandException e) {
+            // FIXME Sprach unabhängigkeit
+            FO.fehler("Unbehandelte Ausnahme in " + arg1[1] + "(" + GroovySystem.getVersion() + "/" + AbasBaseScript.version + "):\n" + getStacktrace(e));
+            log.error("Unbehandelte Ausnahme in " + arg1[1] + "(" + GroovySystem.getVersion() + "/" + AbasBaseScript.version + "):\n", StackTraceUtils.deepSanitize(e));
+            error = true;
+        } catch (AbortedException e) {
+            // FIXME Sprach unabhängigkeit
+            FO.fehler("FOP(" + arg1[1] + ") abgebrochen \nFOP wurde durch Anwender abgebrochen");
+            log.error("FOP(" + arg1[1] + ") abgebrochen \nFOP wurde durch Anwender abgebrochen");
+            error = true;
+        } catch (CompilationFailedException e) {
+            // FIXME Sprach unabhängigkeit
+            // FO.box("äbersetzung fehlgeschlagen", "GroovyFO konnte
+            // das Script nicht äbersetzen: "
+            // + e.getMessage() + "\n" + getStacktrace(e));
+            FO.fehler("Übersetzung fehlgeschlagen (" + arg1[1] + "):\n" + getStacktrace(e));
+            log.error("Übersetzung fehlgeschlagen (" + arg1[1] + "):\n", StackTraceUtils.deepSanitize(e));
+            error = true;
+        } catch(Exception e) {
+            // FIXME Sprach unabhängigkeit
+            // FO.box("Unbehandelte Ausnahme in " + arg1[1],
+            // getStacktrace(e));
+            error = true;
+            throw new FOPException(e.getMessage(), e);
+        } finally {
+            clearGroovyClassesCache();
+            if (o != null)
+                GroovySystem.getMetaClassRegistry().removeMetaClass(o.getClass());
+            if (gscript != null)
+                GroovySystem.getMetaClassRegistry().removeMetaClass(gscript.getClass());
+            if (shell != null && shell.getClassLoader() != null)
+                shell.getClassLoader().clearCache();
+            // shell = null;
+        }
+
+        if (error) {
+            // FIXME Möglichkeit für schwerwiegenden Fehler
+            return -1;
+        }
+
+        return 0;
+    }
+
+    @Override
+    public int runFop(FOPSessionContext arg0, String[] arg1) throws FOPException {
+        return ScriptExecutor.executeScript(arg0, arg1);
+    }
+
+    private static String getStacktrace(Exception e) {
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        e.printStackTrace(pw);
+        return sw.toString();
+    }
+
+    protected static boolean clearGroovyClassesCache() {
+        try {
+            Class<MetaClassRegistryImpl> mcriClass = MetaClassRegistryImpl.class;
+
+            Field constantMetaClassesField = mcriClass.getDeclaredField("constantMetaClasses");
+            constantMetaClassesField.setAccessible(true);
+
+            Field constantMetaClassCountField = mcriClass.getDeclaredField("constantMetaClassCount");
+            constantMetaClassCountField.setAccessible(true);
+
+            Class<GroovySystem> gsClass = GroovySystem.class;
+            Field metaClassRegistryField = gsClass.getDeclaredField("META_CLASS_REGISTRY");
+            metaClassRegistryField.setAccessible(true);
+            MetaClassRegistryImpl mcri = (MetaClassRegistryImpl) metaClassRegistryField.get(null);
+            ConcurrentReaderHashMap constantMetaClasses = (ConcurrentReaderHashMap) constantMetaClassesField.get(mcri);
+
+            constantMetaClasses.clear();
+            constantMetaClassCountField.set(mcri, 0);
+
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
 }
