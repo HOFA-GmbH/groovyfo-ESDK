@@ -36,10 +36,9 @@ import groovy.lang.Script;
 
 /**
  * @author Michael Rothenbücher, Finetech GmbH & Co. KG
- * 
- *         JFOP erwartet als ersten Parameter das Groovyscript welches
- *         ausgeführt werden soll und übergibt alle Parameter an dieses weiter
- * 
+ * <p>
+ * JFOP erwartet als ersten Parameter das Groovyscript welches
+ * ausgeführt werden soll und übergibt alle Parameter an dieses weiter
  */
 public class ScriptExecutor implements ContextRunnable {
 
@@ -169,7 +168,7 @@ public class ScriptExecutor implements ContextRunnable {
             FO.fehler("Übersetzung fehlgeschlagen (" + arg1[1] + "):\n" + getStacktrace(e));
             log.error("Übersetzung fehlgeschlagen (" + arg1[1] + "):\n", StackTraceUtils.deepSanitize(e));
             error = true;
-        } catch(Exception e) {
+        } catch (Exception e) {
             // FIXME Sprach unabhängigkeit
             // FO.box("Unbehandelte Ausnahme in " + arg1[1],
             // getStacktrace(e));
