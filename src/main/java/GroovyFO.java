@@ -5,9 +5,9 @@ import de.finetech.groovy.ScriptExecutor;
 
 public class GroovyFO implements ContextRunnable {
 
-	@Override
-	public int runFop(FOPSessionContext arg0, String[] arg1) throws FOPException {
-		return ScriptExecutor.executeScript(arg0, arg1);
-	}
+    @Override
+    public int runFop(FOPSessionContext arg0, String[] arg1) throws FOPException {
+        return ScriptExecutor.executeScript(arg0, arg1);
+    }
 
 }
