@@ -3,6 +3,7 @@ package de.finetech.groovy;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
+import de.abas.eks.jfop.FOPExitException;
 import org.codehaus.groovy.runtime.StackTraceUtils;
 import org.slf4j.MDC;
 
@@ -122,6 +123,9 @@ public abstract class AbasBaseScript extends GroovyFOScript {
             MDC.put("SCRIPT", this.scriptfile);
             this.dbContext = (DbContext) this.getBinding().getVariable("dbContext");
             o = runCode();
+        } catch (FOPExitException e) {
+            // silent exception without stacktrace
+            throw e;
         } catch (Exception e) {
             log.error("Error in script :", StackTraceUtils.deepSanitize(e));
             this.onerror(e);
@@ -142,14 +146,19 @@ public abstract class AbasBaseScript extends GroovyFOScript {
 
 
     /**
-     * Methode wird beim Auftretten einer unbehandelten Ausnahme ausgeführt
+     * Methode wird beim Auftreten einer unbehandelten Ausnahme ausgeführt
      */
     public Object onerror(Object ex) {
+        if (ex instanceof FOPExitException) {
+            return ex;
+        }
+
         if (ex instanceof Exception) {
             Exception e = (Exception) ex;
             e.printStackTrace();
             println("Unbehandelte Ausnahme in " + this.scriptfile + "(" + GroovySystem.getVersion() + "/" + AbasBaseScript.version + "): \n" + getStacktrace(e));
         }
+
         return null;
     }
 
