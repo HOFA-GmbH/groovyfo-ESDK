@@ -195,6 +195,13 @@ public class ScriptExecutor implements ContextRunnable {
             return -1;
         }
 
+        try {
+            if (o != null) {
+                return Integer.parseInt(o.toString());
+            }
+        } catch (Exception ignored) {
+        }
+
         return 0;
     }
 
