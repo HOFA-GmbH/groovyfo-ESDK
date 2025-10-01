@@ -206,7 +206,9 @@ dependencies {
     implementation "de.abas.homedir:abas-jfop-base:1.0.0"
     implementation "de.abas.homedir:abas-jfopapi:1.0.0"
     implementation 'io.github.http-builder-ng:http-builder-ng-core:1.0.4'
-
+    implementation 'org.codehaus.groovy.modules.http-builder:http-builder:0.7.1'
+    implementation 'org.apache.httpcomponents:httpmime:4.5.14'
+    implementation 'javax.ws.rs:javax.ws.rs-api:2.1.1'
 
     // Base classes to access ERP via JFOP context.
     // Among other things, the buffer classes are stored here (e.g. GlobalTextBuffer, ScreenBuffer, UserTextBuffer).
