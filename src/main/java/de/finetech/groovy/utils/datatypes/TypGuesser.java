@@ -27,7 +27,7 @@ public class TypGuesser {
 	private static Pattern doubletPattern = Pattern.compile("(?:(?:R[^ ]*T[^ ]*)|(?:M[^ ]*T[^ ]*))");
 	private static Pattern doubledtPattern = Pattern.compile("(?:(?:R[^ ]*DT[^ ]*)|(?:M[^ ]*DT[^ ]*))");
 
-	private static Pattern boolPattern = Pattern.compile("(?:B[^ ]*)");
+	private static Pattern boolPattern = Pattern.compile("(?:B[^ U]*)|(?:ZAE0[^ ]*)");
 	private static Pattern pointerPattern = Pattern.compile("(?:(?:P[^ ]*)|(?:ID[^ ]*)|(?:VP[^ ]*)|(?:VID[^ ]*)|(?:C[^ ]*))");
 
 	//private static Pattern newPattern = Pattern.compile(
