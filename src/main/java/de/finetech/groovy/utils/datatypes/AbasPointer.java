@@ -37,18 +37,19 @@ public class AbasPointer extends GroovyFOVariable<String> {
 
 	/**
 	 * Zugriff auf Variablen eines Verweises
-	 * 
 	 * M|vorgang^id z.Bsp. in groovy fo dann
-	 * 
 	 * m.vorgang^"id"
 	 * 
-	 * @param var
-	 * @return
-	 * @throws FOPException
-	 * @throws GroovyFOException
+	 * @param var field name
+	 * @return Object
+	 * @throws FOPException abas FOP exception
+	 * @throws GroovyFOException GroovyFO exception
 	 */
 	public Object xor(String var) throws FOPException, GroovyFOException, ParseException {
-		Object o = this.script.getComputedValue(this.getVariablename() + "^" + var);
-		return o;
+		return this.get(var);
+	}
+
+	public Object get(String var) throws FOPException, GroovyFOException, ParseException {
+		return this.script.getComputedValue(this.getVariablename() + "^" + var);
 	}
 }
