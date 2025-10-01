@@ -11,6 +11,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.abas.eks.jfop.FOPExitException;
 import org.codehaus.groovy.control.CompilationFailedException;
 import org.codehaus.groovy.control.CompilerConfiguration;
 import org.codehaus.groovy.control.customizers.ImportCustomizer;
@@ -160,6 +161,10 @@ public class ScriptExecutor implements ContextRunnable {
             FO.fehler("FOP(" + arg1[1] + ") abgebrochen \nFOP wurde durch Anwender abgebrochen");
             log.error("FOP(" + arg1[1] + ") abgebrochen \nFOP wurde durch Anwender abgebrochen");
             error = true;
+        } catch (FOPExitException e) {
+            // silent exception without stacktrace
+            error = true;
+//            throw e;
         } catch (CompilationFailedException e) {
             // FIXME Sprach unabhängigkeit
             // FO.box("äbersetzung fehlgeschlagen", "GroovyFO konnte
@@ -194,7 +199,7 @@ public class ScriptExecutor implements ContextRunnable {
     }
 
     @Override
-    public int runFop(FOPSessionContext arg0, String[] arg1) throws FOPException {
+    public int runFop(FOPSessionContext arg0, String[] arg1) throws FOPException, FOPExitException {
         return ScriptExecutor.executeScript(arg0, arg1);
     }
 
